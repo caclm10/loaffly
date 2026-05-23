@@ -212,8 +212,13 @@ function AccountFormPage() {
                             <FieldLabel>Current Balance</FieldLabel>
                             <Input
                                 {...field}
-                                type="number"
+                                type="text"
                                 placeholder="0"
+                                value={field.value ? parseInt(field.value.replace(/\D/g, ""), 10).toLocaleString("id-ID") : ""}
+                                onChange={(e) => {
+                                    const rawValue = e.target.value.replace(/\D/g, "");
+                                    field.onChange(rawValue);
+                                }}
                             />
                             {fieldState.invalid && (
                                 <FieldError errors={[fieldState.error]} />
