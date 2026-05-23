@@ -90,4 +90,24 @@ function formatTime(dateStr: string): string {
     return ""
 }
 
-export { formatCurrency, formatDate, formatDateLabel, formatTime, getDateKey }
+/**
+ * Formatting date string to a full readable date (e.g., "May 5 2024").
+ */
+function formatDateFull(dateStr: string): string {
+    const [datePart] = dateStr.split("T")
+    const parts = datePart.split("-")
+    if (parts.length !== 3) return dateStr
+
+    const monthNames = [
+        "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+    ]
+
+    const year = parseInt(parts[0], 10)
+    const monthIdx = parseInt(parts[1], 10) - 1
+    const day = parseInt(parts[2], 10)
+
+    return `${monthNames[monthIdx]} ${day} ${year}`
+}
+
+export { formatCurrency, formatDate, formatDateLabel, formatDateFull, formatTime, getDateKey }

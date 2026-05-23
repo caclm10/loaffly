@@ -93,7 +93,7 @@
     --ring: oklch(0.32 0.035 45);
 
     /* Border Radius */
-    --radius: 1rem; /* 16px default */
+    --radius: 1rem;
 
     /* Custom brand color tokens */
     --gold-crust: oklch(0.93 0.045 75);

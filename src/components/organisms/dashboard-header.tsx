@@ -13,6 +13,15 @@ function DashboardHeader({ profileName }: DashboardHeaderProps) {
               .join("")
         : "?"
 
+    // Get dynamic greeting based on system hour
+    const getGreeting = (): string => {
+        const hour = new Date().getHours()
+        if (hour >= 5 && hour < 12) return "Good Morning"
+        if (hour >= 12 && hour < 17) return "Good Afternoon"
+        if (hour >= 17 && hour < 22) return "Good Evening"
+        return "Good Night"
+    }
+
     return (
         <div className="flex items-center justify-between">
             {/* Profile / Greeting */}
@@ -22,7 +31,7 @@ function DashboardHeader({ profileName }: DashboardHeaderProps) {
                 </div>
                 <div className="flex flex-col">
                     <span className="text-xs text-muted-foreground">
-                        Good Morning
+                        {getGreeting()}
                     </span>
                     <h2 className="text-base leading-tight font-semibold text-foreground">
                         {profileName}

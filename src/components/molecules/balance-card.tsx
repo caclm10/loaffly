@@ -8,7 +8,7 @@ interface BalanceCardProps {
 function BalanceCard({ balance, isLoading }: BalanceCardProps) {
 
     return (
-        <div className="relative overflow-hidden rounded-3xl bg-linear-to-br from-gold-crust to-caramel-crust p-6 text-primary shadow-sm">
+        <div className="relative overflow-hidden rounded-xl bg-linear-to-br from-gold-crust to-caramel-crust p-6 text-primary shadow-sm">
             <div className="relative z-10 flex flex-col gap-1">
                 <span className="text-xs font-medium tracking-wider text-primary/75 uppercase">
                     Your Balance

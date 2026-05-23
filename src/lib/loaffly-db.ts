@@ -3,7 +3,7 @@ import Dexie, { type EntityTable } from "dexie"
 interface Wallet {
     id: number
     name: string
-    type: "bank" | "ewallet" | "cash" | "savings"
+    type: "bank" | "ewallet" | "cash"
     accountNumber: string
     initialBalance: number
     color: string

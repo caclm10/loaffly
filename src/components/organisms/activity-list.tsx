@@ -51,7 +51,7 @@ function ActivityList({ transactions, wallets, isLoading }: ActivityListProps) {
                     Activity
                 </h3>
                 <Link
-                    to="/reports"
+                    to="/transactions"
                     className="text-sm font-medium text-warm-ochre hover:underline"
                 >
                     See all
@@ -101,11 +101,17 @@ function ActivityList({ transactions, wallets, isLoading }: ActivityListProps) {
                                         wallets.find((w) => w.id === t.walletId)
                                             ?.name || "Wallet"
                                     return (
-                                        <ActivityItem
+                                        <Link
                                             key={t.id}
-                                            transaction={t}
-                                            walletName={walletName}
-                                        />
+                                            to={`/transactions/${t.id}`}
+                                            state={{ from: "/" }}
+                                            className="block transition-transform active:scale-[0.99]"
+                                        >
+                                            <ActivityItem
+                                                transaction={t}
+                                                walletName={walletName}
+                                            />
+                                        </Link>
                                     )
                                 })}
                             </div>
