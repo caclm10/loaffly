@@ -1,8 +1,8 @@
 import {
-    Calendar,
-    ChevronDown,
-    ArrowUpRight,
-    ArrowDownRight,
+    CalendarIcon,
+    ChevronDownIcon,
+    ArrowUpRightIcon,
+    ArrowDownRightIcon,
 } from "lucide-react"
 
 function DashboardPage() {
@@ -27,14 +27,14 @@ function DashboardPage() {
 
                 {/* Date Selector */}
                 <button className="flex items-center gap-2 rounded-xl bg-secondary/50 px-3 py-2 text-sm font-medium text-warm-ochre transition-colors hover:bg-secondary">
-                    <Calendar className="h-4 w-4" />
+                    <CalendarIcon className="h-4 w-4" />
                     <span>May</span>
-                    <ChevronDown className="h-3 w-3 opacity-60" />
+                    <ChevronDownIcon className="h-3 w-3 opacity-60" />
                 </button>
             </div>
 
             {/* Balance Card Skeleton */}
-            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-gold-crust to-caramel-crust p-6 text-primary shadow-sm">
+            <div className="relative overflow-hidden rounded-3xl bg-linear-to-br from-gold-crust to-caramel-crust p-6 text-primary shadow-sm">
                 <div className="relative z-10 flex flex-col gap-1">
                     <span className="text-xs font-medium tracking-wider text-primary/75 uppercase">
                         Your Balance
@@ -53,7 +53,7 @@ function DashboardPage() {
                 {/* Income Card */}
                 <div className="flex items-center gap-3 rounded-2xl border border-border/50 bg-card p-4 shadow-sm">
                     <div className="flex h-10 w-10 items-center justify-center rounded-full bg-secondary/80 text-success">
-                        <ArrowUpRight className="h-5 w-5" />
+                        <ArrowUpRightIcon className="h-5 w-5" />
                     </div>
                     <div className="flex flex-col">
                         <span className="text-xs text-muted-foreground">
@@ -68,7 +68,7 @@ function DashboardPage() {
                 {/* Expense Card */}
                 <div className="flex items-center gap-3 rounded-2xl border border-border/50 bg-card p-4 shadow-sm">
                     <div className="flex h-10 w-10 items-center justify-center rounded-full bg-secondary/80 text-destructive">
-                        <ArrowDownRight className="h-5 w-5" />
+                        <ArrowDownRightIcon className="h-5 w-5" />
                     </div>
                     <div className="flex flex-col">
                         <span className="text-xs text-muted-foreground">
