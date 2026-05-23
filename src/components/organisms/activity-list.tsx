@@ -81,7 +81,7 @@ function ActivityList({ transactions, wallets, isLoading }: ActivityListProps) {
                     ))
                 ) : groupedTransactions.length === 0 ? (
                     <div className="py-6 text-center text-sm text-muted-foreground">
-                        Belum ada transaksi bulan ini.
+                        No transactions this month.
                     </div>
                 ) : (
                     groupedTransactions.map((group) => (

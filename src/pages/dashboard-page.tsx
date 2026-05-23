@@ -29,15 +29,31 @@ function DashboardPage() {
         }, 0)
     }, [wallets, transactions])
 
-    // 2. Calculate Monthly Stats for May 2024 (as pictured in design-01.png)
+    // 2. Calculate Monthly Stats for the active month (latest transaction's month, fallback to current calendar month)
     const monthlyStats = useMemo(() => {
         if (!transactions) return { income: 0, expenses: 0 }
-        // Filter transactions for May 2024 ("2024-05")
-        const mayTx = transactions.filter((t) => t.date.startsWith("2024-05"))
-        const income = mayTx
+
+        let targetMonthStr = ""
+        if (transactions.length > 0) {
+            // Find transaction with the latest date to determine the active month
+            const latestTx = [...transactions].sort((a, b) => b.date.localeCompare(a.date))[0]
+            if (latestTx) {
+                targetMonthStr = latestTx.date.substring(0, 7) // "YYYY-MM"
+            }
+        }
+
+        if (!targetMonthStr) {
+            const now = new Date()
+            const yyyy = now.getFullYear()
+            const mm = String(now.getMonth() + 1).padStart(2, "0")
+            targetMonthStr = `${yyyy}-${mm}`
+        }
+
+        const monthTx = transactions.filter((t) => t.date.startsWith(targetMonthStr))
+        const income = monthTx
             .filter((t) => t.type === "income")
             .reduce((s, t) => s + t.amount, 0)
-        const expenses = mayTx
+        const expenses = monthTx
             .filter((t) => t.type === "expense")
             .reduce((s, t) => s + t.amount, 0)
         return { income, expenses }
