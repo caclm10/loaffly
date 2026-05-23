@@ -24,6 +24,7 @@ dist-ssr
 *.sw?
 
 app_idea.md
+design-01.png
 
 # Agent directories and files
 .agents/
