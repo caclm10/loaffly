@@ -51,7 +51,7 @@ function Numpad({ onInput, onDelete, onSubmit }: NumpadProps) {
                     type="button"
                     onClick={() => handlePress(key)}
                     className={cn(
-                        "flex h-14 items-center justify-center rounded-xl text-2xl font-medium transition-colors active:scale-95",
+                        "flex h-11 items-center justify-center rounded-xl text-2xl font-medium transition-colors active:scale-95",
                         key.type === "number" &&
                             "border border-border/50 bg-background text-foreground",
                         key.type === "action" && "bg-muted text-foreground",

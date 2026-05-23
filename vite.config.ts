@@ -20,12 +20,13 @@ export default defineConfig({
                 "pwa-192x192.png",
                 "pwa-512x512.png",
                 "maskable-icon-512x512.png",
-                "logo.svg"
+                "logo.svg",
             ],
             manifest: {
                 name: "Loaffly",
                 short_name: "Loaffly",
-                description: "Loaffly is a modern, beautiful personal finance application.",
+                description:
+                    "Loaffly is a modern, beautiful personal finance application.",
                 theme_color: "#0f0f11",
                 background_color: "#0f0f11",
                 display: "standalone",
@@ -35,37 +36,37 @@ export default defineConfig({
                         src: "/logo.svg",
                         sizes: "any",
                         type: "image/svg+xml",
-                        purpose: "any"
+                        purpose: "any",
                     },
                     {
                         src: "/pwa-64x64.png",
                         sizes: "64x64",
                         type: "image/png",
-                        purpose: "any"
+                        purpose: "any",
                     },
                     {
                         src: "/pwa-192x192.png",
                         sizes: "192x192",
                         type: "image/png",
-                        purpose: "any"
+                        purpose: "any",
                     },
                     {
                         src: "/pwa-512x512.png",
                         sizes: "512x512",
                         type: "image/png",
-                        purpose: "any"
+                        purpose: "any",
                     },
                     {
                         src: "/maskable-icon-512x512.png",
                         sizes: "512x512",
                         type: "image/png",
-                        purpose: "maskable"
-                    }
-                ]
+                        purpose: "maskable",
+                    },
+                ],
             },
             workbox: {
                 globPatterns: ["**/*.{js,css,html,svg,png,woff,woff2}"],
-                maximumFileSizeToCacheInBytes: 3 * 1024 * 1024
+                maximumFileSizeToCacheInBytes: 3 * 1024 * 1024,
             },
         }),
     ],
@@ -73,5 +74,8 @@ export default defineConfig({
         alias: {
             "@": path.resolve(__dirname, "./src"),
         },
+    },
+    preview: {
+        allowedHosts: true,
     },
 })

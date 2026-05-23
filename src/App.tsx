@@ -10,6 +10,8 @@ import { AccountDetailPage } from "@/pages/account-detail-page"
 import { AccountFormPage } from "@/pages/account-form-page"
 import { ProfilePage } from "@/pages/profile-page"
 
+import { Toaster } from "@/components/ui/sonner"
+
 function App() {
     return (
         <BrowserRouter>
@@ -48,6 +50,7 @@ function App() {
                     element={<AccountFormPage />}
                 />
             </Routes>
+            <Toaster position="top-center" />
         </BrowserRouter>
     )
 }

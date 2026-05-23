@@ -1,4 +1,5 @@
 import { useState, useRef } from "react"
+import { toast } from "sonner"
 import { useNavigate } from "react-router"
 import { useLiveQuery } from "dexie-react-hooks"
 import {
@@ -94,17 +95,17 @@ function NewTransactionPage() {
     async function handleNumpadSubmit() {
         const parsedAmount = Math.abs(parseFloat(amount))
         if (isNaN(parsedAmount) || parsedAmount === 0) {
-            alert("Please enter a valid amount greater than 0.")
+            toast.error("Please enter a valid amount greater than 0.")
             return
         }
 
         if (!selectedCategoryId) {
-            alert("Please select a category.")
+            toast.error("Please select a category.")
             return
         }
 
         if (!selectedWalletId) {
-            alert("Please select a wallet.")
+            toast.error("Please select a wallet.")
             return
         }
 
@@ -128,30 +129,65 @@ function NewTransactionPage() {
         navigate("/")
     }
 
+    // Custom helper to display only the formatted Date (e.g. 23 May)
+    const getDisplayedDate = (dateTimeStr: string) => {
+        if (!dateTimeStr) return ""
+        const [datePart] = dateTimeStr.split("T")
+        const parts = datePart.split("-")
+        if (parts.length !== 3) return dateTimeStr
+        const monthNames = [
+            "Jan",
+            "Feb",
+            "Mar",
+            "Apr",
+            "May",
+            "Jun",
+            "Jul",
+            "Aug",
+            "Sep",
+            "Oct",
+            "Nov",
+            "Dec",
+        ]
+        const monthIdx = parseInt(parts[1], 10) - 1
+        const day = parseInt(parts[2], 10)
+        return `${day} ${monthNames[monthIdx]}`
+    }
+
     return (
         <SubPageLayout title="New Transaction" backTo="/">
             {/* Scrollable upper section */}
-            <div className="flex flex-col gap-6 pt-2 pb-[430px]">
+            <div className="flex flex-col gap-5 pt-2 pb-[350px]">
                 {/* 1. Toggle Tab: Income / Expenses using premium shadcn Tabs */}
                 <div className="flex justify-center">
                     <Tabs
-                        className="w-full"
+                        className="h-9 w-full"
                         value={type}
                         onValueChange={(val: any) => handleTypeChange(val)}
                     >
-                        <TabsList className="grid w-full grid-cols-2 bg-secondary/50 p-1">
-                            <TabsTrigger value="expense">Expenses</TabsTrigger>
-                            <TabsTrigger value="income">Income</TabsTrigger>
+                        <TabsList className="grid h-8 w-full grid-cols-2 bg-secondary/50 p-0.5">
+                            <TabsTrigger
+                                className="h-7 py-1 text-xs"
+                                value="expense"
+                            >
+                                Expenses
+                            </TabsTrigger>
+                            <TabsTrigger
+                                className="h-7 py-1 text-xs"
+                                value="income"
+                            >
+                                Income
+                            </TabsTrigger>
                         </TabsList>
                     </Tabs>
                 </div>
 
                 {/* 2. Amount Display Area */}
-                <div className="flex flex-col items-center justify-center py-4">
-                    <span className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
+                <div className="flex flex-col items-center justify-center py-1">
+                    <span className="text-[10px] font-bold tracking-widest text-muted-foreground uppercase opacity-85">
                         Amount
                     </span>
-                    <div className="mt-1 text-3xl font-extrabold text-foreground">
+                    <div className="mt-0.5 text-2xl font-black text-foreground">
                         {type === "expense" ? "-" : "+"}
                         {formatCurrency(parseFloat(amount) || 0)}
                     </div>
@@ -171,7 +207,7 @@ function NewTransactionPage() {
             </div>
 
             {/* Fixed bottom section containing Wallet selector, Note, Date-Time, and Numpad */}
-            <div className="fixed bottom-0 left-1/2 z-40 flex w-full max-w-2xl -translate-x-1/2 flex-col gap-3.5 border-t border-border/30 bg-background/95 px-4 py-4 pb-8 backdrop-blur-md sm:px-6">
+            <div className="fixed bottom-0 left-1/2 z-40 flex w-full max-w-2xl -translate-x-1/2 flex-col gap-2 border-t border-border/30 bg-background/95 px-4 py-2.5 pb-4 backdrop-blur-md sm:px-6">
                 {/* 1. Wallet Selector Dropdown using premium shadcn DropdownMenu */}
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -190,7 +226,7 @@ function NewTransactionPage() {
                             <ChevronDownIcon className="size-4 text-muted-foreground" />
                         </button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent className="z-50 rounded-lg border border-border/50 bg-popover p-1 shadow-md">
+                    <DropdownMenuContent className="z-50 w-[var(--radix-dropdown-menu-trigger-width)] rounded-lg border border-border/50 bg-popover p-1 shadow-md">
                         {wallets?.map((wallet) => (
                             <DropdownMenuItem
                                 key={wallet.id}
@@ -210,7 +246,7 @@ function NewTransactionPage() {
                     </DropdownMenuContent>
                 </DropdownMenu>
 
-                {/* 2. Note and Datetime Local Inputs using premium shadcn Input */}
+                {/* 2. Note and Date-Time Inputs using premium shadcn Input */}
                 <div className="grid grid-cols-2 gap-3">
                     {/* Note Input */}
                     <div className="relative flex w-full items-center">
@@ -220,7 +256,7 @@ function NewTransactionPage() {
                             value={note}
                             onChange={(e) => setNote(e.target.value)}
                             placeholder="Add note..."
-                            className="h-11 rounded-lg border border-input pl-9 text-xs"
+                            className="h-11 rounded-lg border border-input bg-background pl-9 text-xs"
                         />
                     </div>
 
@@ -237,13 +273,23 @@ function NewTransactionPage() {
                         }}
                         className="relative flex w-full cursor-pointer items-center"
                     >
-                        <CalendarIcon className="pointer-events-none absolute left-3 size-3.5 text-muted-foreground" />
-                        <Input
+                        <CalendarIcon className="pointer-events-none absolute left-3 z-10 size-3.5 text-muted-foreground" />
+
+                        {/* Hidden Native Picker */}
+                        <input
                             ref={datetimeInputRef}
                             type="datetime-local"
                             value={dateTime}
                             onChange={(e) => setDateTime(e.target.value)}
-                            className="h-11 cursor-pointer rounded-lg border border-input pl-9 text-xs scheme-dark [&::-webkit-calendar-picker-indicator]:hidden"
+                            className="pointer-events-none absolute inset-0 h-full w-full cursor-pointer opacity-0"
+                        />
+
+                        {/* Visible Custom Formatted Date Text Display */}
+                        <Input
+                            type="text"
+                            readOnly
+                            value={getDisplayedDate(dateTime)}
+                            className="h-11 cursor-pointer rounded-lg border border-input bg-background pl-9 text-xs"
                         />
                     </div>
                 </div>
