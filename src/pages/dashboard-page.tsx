@@ -1,120 +1,91 @@
-import {
-    CalendarIcon,
-    ChevronDownIcon,
-    ArrowUpRightIcon,
-    ArrowDownRightIcon,
-} from "lucide-react"
+import { useMemo } from "react"
+import { useLiveQuery } from "dexie-react-hooks"
+import { db } from "@/lib/loaffly-db"
+import { DashboardHeader } from "@/components/organisms/dashboard-header"
+import { BalanceCard } from "@/components/molecules/balance-card"
+import { StatCard } from "@/components/molecules/stat-card"
+import { ActivityList } from "@/components/organisms/activity-list"
 
 function DashboardPage() {
+    // Fetch live reactive data from Dexie database
+    const profile = useLiveQuery(() => db.profile.get("current-user"))
+    const wallets = useLiveQuery(() => db.wallets.toArray())
+    const transactions = useLiveQuery(() => db.transactions.toArray())
+
+    // 1. Calculate Wallet Balances and Total Balance
+    const totalBalance = useMemo(() => {
+        if (!wallets || !transactions) return 0
+        return wallets.reduce((sum, wallet) => {
+            const walletTx = transactions.filter(
+                (t) => t.walletId === wallet.id
+            )
+            const incomeSum = walletTx
+                .filter((t) => t.type === "income")
+                .reduce((s, t) => s + t.amount, 0)
+            const expenseSum = walletTx
+                .filter((t) => t.type === "expense")
+                .reduce((s, t) => s + t.amount, 0)
+            return sum + wallet.initialBalance + incomeSum - expenseSum
+        }, 0)
+    }, [wallets, transactions])
+
+    // 2. Calculate Monthly Stats for May 2024 (as pictured in design-01.png)
+    const monthlyStats = useMemo(() => {
+        if (!transactions) return { income: 0, expenses: 0 }
+        // Filter transactions for May 2024 ("2024-05")
+        const mayTx = transactions.filter((t) => t.date.startsWith("2024-05"))
+        const income = mayTx
+            .filter((t) => t.type === "income")
+            .reduce((s, t) => s + t.amount, 0)
+        const expenses = mayTx
+            .filter((t) => t.type === "expense")
+            .reduce((s, t) => s + t.amount, 0)
+        return { income, expenses }
+    }, [transactions])
+
+    // 3. Get Recent 3 Transactions
+    const recentTransactions = useMemo(() => {
+        if (!transactions) return []
+        // Sort by date descending, then ID descending, take top 3
+        return [...transactions]
+            .sort((a, b) => {
+                const dateCompare = b.date.localeCompare(a.date)
+                if (dateCompare !== 0) return dateCompare
+                return (b.id ?? 0) - (a.id ?? 0)
+            })
+            .slice(0, 5)
+    }, [transactions])
+
+    const isLoading = !wallets || !transactions
+
     return (
         <div className="flex flex-col gap-6">
             {/* Header Section */}
-            <div className="flex items-center justify-between">
-                {/* Profile / Greeting */}
-                <div className="flex items-center gap-3">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-cool-mist text-primary">
-                        <span className="text-lg font-semibold">LX</span>
-                    </div>
-                    <div className="flex flex-col">
-                        <span className="text-xs text-muted-foreground">
-                            Good Morning
-                        </span>
-                        <h2 className="text-base leading-tight font-semibold text-foreground">
-                            Lewin Xander
-                        </h2>
-                    </div>
-                </div>
+            <DashboardHeader profileName={profile?.name} />
 
-                {/* Date Selector */}
-                <button className="flex items-center gap-2 rounded-xl bg-secondary/50 px-3 py-2 text-sm font-medium text-warm-ochre transition-colors hover:bg-secondary">
-                    <CalendarIcon className="h-4 w-4" />
-                    <span>May</span>
-                    <ChevronDownIcon className="h-3 w-3 opacity-60" />
-                </button>
-            </div>
+            {/* Balance Card */}
+            <BalanceCard balance={totalBalance} isLoading={isLoading} />
 
-            {/* Balance Card Skeleton */}
-            <div className="relative overflow-hidden rounded-3xl bg-linear-to-br from-gold-crust to-caramel-crust p-6 text-primary shadow-sm">
-                <div className="relative z-10 flex flex-col gap-1">
-                    <span className="text-xs font-medium tracking-wider text-primary/75 uppercase">
-                        Your Balance
-                    </span>
-                    <span className="text-3xl font-bold tracking-tight">
-                        Rp --.---.---
-                    </span>
-                </div>
-
-                {/* Decorative background loaf path */}
-                <div className="pointer-events-none absolute top-0 right-0 bottom-0 w-32 rounded-l-full bg-primary/5 opacity-10" />
-            </div>
-
-            {/* Income / Expense Stats Placeholder */}
+            {/* Income / Expense Stats */}
             <div className="grid grid-cols-2 gap-4">
-                {/* Income Card */}
-                <div className="flex items-center gap-3 rounded-2xl border border-border/50 bg-card p-4 shadow-sm">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-secondary/80 text-success">
-                        <ArrowUpRightIcon className="h-5 w-5" />
-                    </div>
-                    <div className="flex flex-col">
-                        <span className="text-xs text-muted-foreground">
-                            Income
-                        </span>
-                        <span className="text-sm font-semibold text-foreground">
-                            Rp --.---.---
-                        </span>
-                    </div>
-                </div>
-
-                {/* Expense Card */}
-                <div className="flex items-center gap-3 rounded-2xl border border-border/50 bg-card p-4 shadow-sm">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-secondary/80 text-destructive">
-                        <ArrowDownRightIcon className="h-5 w-5" />
-                    </div>
-                    <div className="flex flex-col">
-                        <span className="text-xs text-muted-foreground">
-                            Expenses
-                        </span>
-                        <span className="text-sm font-semibold text-foreground">
-                            Rp --.---.---
-                        </span>
-                    </div>
-                </div>
+                <StatCard
+                    type="income"
+                    amount={monthlyStats.income}
+                    isLoading={isLoading}
+                />
+                <StatCard
+                    type="expense"
+                    amount={monthlyStats.expenses}
+                    isLoading={isLoading}
+                />
             </div>
 
-            {/* Activity List Section Placeholder */}
-            <div className="flex flex-col gap-4">
-                <div className="flex items-center justify-between">
-                    <h3 className="text-base font-semibold text-foreground">
-                        Activity
-                    </h3>
-                    <button className="text-sm font-medium text-warm-ochre hover:underline">
-                        See all
-                    </button>
-                </div>
-
-                {/* Empty State / Skeleton List */}
-                <div className="flex flex-col gap-3">
-                    {[1, 2, 3].map((i) => (
-                        <div
-                            key={i}
-                            className="flex items-center justify-between border-b border-border/10 py-2 last:border-0"
-                        >
-                            <div className="flex items-center gap-3">
-                                <div className="h-11 w-11 animate-pulse rounded-full bg-secondary" />
-                                <div className="flex flex-col gap-1.5">
-                                    <div className="h-4 w-28 animate-pulse rounded bg-muted" />
-                                    <div className="h-3 w-16 animate-pulse rounded bg-muted/65" />
-                                </div>
-                            </div>
-
-                            <div className="flex flex-col items-end gap-1.5">
-                                <div className="h-4 w-20 animate-pulse rounded bg-muted" />
-                                <div className="h-3 w-12 animate-pulse rounded bg-muted/65" />
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </div>
+            {/* Activity List Section */}
+            <ActivityList
+                transactions={recentTransactions}
+                wallets={wallets || []}
+                isLoading={isLoading}
+            />
         </div>
     )
 }

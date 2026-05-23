@@ -43,7 +43,7 @@ class LoafflyDatabase extends Dexie {
         // Seed initial data when database is created for the first time
         this.on("populate", () => {
             this.profile.add({
-                id: "lewin123",
+                id: "current-user",
                 name: "Lewin Xander",
                 username: "lewin",
             })
@@ -85,7 +85,7 @@ class LoafflyDatabase extends Dexie {
                     type: "income",
                     category: "Bonus",
                     walletId: 1, // Mandiri
-                    date: "2024-05-05",
+                    date: "2024-05-05T08:30:00",
                     note: "Bonus proyek sampingan",
                 },
                 {
@@ -94,7 +94,7 @@ class LoafflyDatabase extends Dexie {
                     type: "expense",
                     category: "Snack",
                     walletId: 3, // Gopay
-                    date: "2024-05-05",
+                    date: "2024-05-05T16:15:00",
                     note: "Beli camilan sore",
                 },
                 {
@@ -103,7 +103,7 @@ class LoafflyDatabase extends Dexie {
                     type: "expense",
                     category: "Transportation",
                     walletId: 3, // Gopay
-                    date: "2024-05-05",
+                    date: "2024-05-05T09:41:00",
                     note: "Grab ke kantor",
                 },
                 {
@@ -112,7 +112,7 @@ class LoafflyDatabase extends Dexie {
                     type: "expense",
                     category: "Food and beverage",
                     walletId: 3, // Gopay
-                    date: "2024-05-05",
+                    date: "2024-05-05T20:00:00",
                     note: "Makan malam",
                 },
                 {
@@ -121,7 +121,7 @@ class LoafflyDatabase extends Dexie {
                     type: "expense",
                     category: "Gift",
                     walletId: 2, // Cash
-                    date: "2024-05-04",
+                    date: "2024-05-04T12:00:00",
                     note: "Kado ulang tahun",
                 },
                 {
@@ -130,7 +130,7 @@ class LoafflyDatabase extends Dexie {
                     type: "expense",
                     category: "Entertain",
                     walletId: 2, // Cash
-                    date: "2024-05-04",
+                    date: "2024-05-04T19:30:00",
                     note: "Nonton bioskop & makan",
                 },
                 {
@@ -139,7 +139,7 @@ class LoafflyDatabase extends Dexie {
                     type: "expense",
                     category: "Pet",
                     walletId: 3, // Gopay
-                    date: "2024-05-04",
+                    date: "2024-05-04T10:45:00",
                     note: "Buy at zorro petshop",
                 },
             ])
@@ -149,5 +149,11 @@ class LoafflyDatabase extends Dexie {
 
 const db = new LoafflyDatabase()
 
-export { db, LoafflyDatabase }
+async function resetDatabase() {
+    await db.delete()
+    await db.open()
+}
+
+export { db, LoafflyDatabase, resetDatabase }
 export type { Wallet, Transaction, UserProfile }
+
