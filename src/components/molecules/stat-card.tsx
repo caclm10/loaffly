@@ -11,7 +11,6 @@ interface StatCardProps {
 function StatCard({ type, amount, isLoading }: StatCardProps) {
     const isIncome = type === "income";
     const formattedValue = isLoading ? "Rp --.---.---" : formatCurrency(amount);
-    const isMillions = !isLoading && amount >= 1000000;
 
     return (
         <div className="flex flex-col gap-1.5 xs:flex-row xs:items-center xs:gap-3 rounded-xl border border-border/50 bg-card p-4 shadow-sm">
@@ -40,12 +39,7 @@ function StatCard({ type, amount, isLoading }: StatCardProps) {
                         )}
                     </div>
                 </div>
-                <span
-                    className={cn(
-                        "font-semibold text-foreground truncate mt-0.5 xs:mt-0",
-                        isMillions ? "text-xs" : "text-sm"
-                    )}
-                >
+                <span className="text-sm font-semibold text-foreground truncate mt-0.5 xs:mt-0">
                     {formattedValue}
                 </span>
             </div>
