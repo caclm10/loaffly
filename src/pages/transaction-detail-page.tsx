@@ -18,6 +18,7 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
+import { Button } from "@/components/ui/button"
 
 function TransactionDetailPage() {
     const { id } = useParams<{ id: string }>()
@@ -32,7 +33,7 @@ function TransactionDetailPage() {
     const walletName =
         wallets && transaction
             ? wallets.find((w) => w.id === transaction.walletId)?.name ||
-              "Wallet"
+            "Wallet"
             : "Wallet"
 
     // Context-aware back path
@@ -51,27 +52,29 @@ function TransactionDetailPage() {
                 </div>
             </SubPageLayout>
         )
-     }
- 
-     const category = getCategory(transaction.category)
-     const CategoryIcon = category.icon
-     const isExpense = transaction.type === "expense"
- 
-     return (
-         <SubPageLayout
-             title="Detail transaction"
-             backTo={backToPath}
-             rightAction={
+    }
+
+    const category = getCategory(transaction.category)
+    const CategoryIcon = category.icon
+    const isExpense = transaction.type === "expense"
+
+    return (
+        <SubPageLayout
+            title="Detail transaction"
+            backTo={backToPath}
+            rightAction={
                 <AlertDialog>
                     <AlertDialogTrigger asChild>
-                        <button
-                            className="flex size-9 items-center justify-center rounded-full text-destructive transition-colors hover:bg-destructive/10"
+                        <Button
+                            type="button"
+                            size="icon-sm"
+                            variant="destructive"
                             aria-label="Delete transaction"
                         >
-                            <Trash2Icon className="size-5" />
-                        </button>
+                            <Trash2Icon className="size-4" />
+                        </Button>
                     </AlertDialogTrigger>
-                    <AlertDialogContent className="max-w-sm border border-border/50 bg-popover p-6 shadow-xl backdrop-blur-md">
+                    <AlertDialogContent className="max-w-sm">
                         <AlertDialogHeader>
                             <AlertDialogTitle className="text-lg font-bold text-foreground">
                                 Delete Transaction
@@ -81,7 +84,7 @@ function TransactionDetailPage() {
                                 transaction? This action cannot be undone.
                             </AlertDialogDescription>
                         </AlertDialogHeader>
-                        <AlertDialogFooter className="mt-4 flex flex-row justify-end gap-2">
+                        <AlertDialogFooter>
                             <AlertDialogCancel>Cancel</AlertDialogCancel>
                             <AlertDialogAction
                                 variant="destructive"
@@ -115,11 +118,10 @@ function TransactionDetailPage() {
 
                     {/* Transaction Type Badge */}
                     <span
-                        className={`rounded-full border px-4 py-1 text-xs font-semibold tracking-wider uppercase ${
-                            isExpense
-                                ? "border-destructive/30 bg-destructive/5 text-destructive"
-                                : "border-success/30 bg-success/5 text-success"
-                        }`}
+                        className={`rounded-full border px-4 py-1 text-xs font-semibold tracking-wider uppercase ${isExpense
+                            ? "border-destructive/30 bg-destructive/5 text-destructive"
+                            : "border-success/30 bg-success/5 text-success"
+                            }`}
                     >
                         {isExpense ? "Expenses" : "Income"}
                     </span>

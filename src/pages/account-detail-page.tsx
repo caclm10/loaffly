@@ -128,50 +128,51 @@ function AccountDetailPage() {
                             <div className="grid grid-cols-1 xs:grid-cols-2 gap-3 xs:gap-4">
                                 {/* Edit Action Card */}
                                 <DrawerClose asChild>
-                                    <button
+                                    <Button
+                                        variant="secondary"
                                         onClick={() => navigate(`/account/${walletId}/edit`)}
-                                        className="flex flex-row items-center justify-start gap-4 rounded-xl border border-border/40 bg-secondary/35 p-3 xs:flex-col xs:items-center xs:justify-center xs:gap-2 xs:p-4 hover:bg-secondary active:scale-[0.98] transition-all cursor-pointer w-full"
+                                        className="flex flex-row items-center justify-start h-auto p-3 gap-3 xs:flex-col xs:items-center xs:justify-center xs:gap-1 xs:p-4"
                                     >
-                                        <div className="flex size-9 xs:size-10 items-center justify-center rounded-full bg-primary/10 text-primary xs:mb-1 shrink-0">
-                                            <PencilIcon className="size-4.5 xs:size-5" />
+                                        <div className="flex size-9 items-center justify-center rounded-full bg-primary/10 text-primary xs:mb-1 shrink-0">
+                                            <PencilIcon className="size-4" />
                                         </div>
                                         <span className="text-xs font-semibold text-foreground">
                                             Edit Account
                                         </span>
-                                    </button>
+                                    </Button>
                                 </DrawerClose>
 
                                 {/* Delete Action Card with nested confirmation */}
                                 <AlertDialog>
                                     <AlertDialogTrigger asChild>
-                                        <button
-                                            className="flex flex-row items-center justify-start gap-4 rounded-xl border border-destructive/20 bg-destructive/5 p-3 xs:flex-col xs:items-center xs:justify-center xs:gap-2 xs:p-4 hover:bg-destructive/10 active:scale-[0.98] transition-all text-destructive cursor-pointer w-full"
+                                        <Button
+                                            variant="destructive"
+                                            className="flex flex-row items-center justify-start h-auto p-3 gap-3 xs:flex-col xs:items-center xs:justify-center xs:gap-1 xs:p-4"
                                         >
-                                            <div className="flex size-9 xs:size-10 items-center justify-center rounded-full bg-destructive/10 text-destructive xs:mb-1 shrink-0">
-                                                <Trash2Icon className="size-4.5 xs:size-5" />
+                                            <div className="flex size-9 items-center justify-center rounded-full bg-destructive/10 text-destructive xs:mb-1 shrink-0">
+                                                <Trash2Icon className="size-4" />
                                             </div>
-                                            <span className="text-xs font-semibold text-destructive">
+                                            <span className="text-xs font-semibold">
                                                 Delete Account
                                             </span>
-                                        </button>
+                                        </Button>
                                     </AlertDialogTrigger>
-                                    <AlertDialogContent className="border border-border/50 bg-popover p-6 shadow-xl backdrop-blur-md max-w-sm rounded-2xl">
+                                    <AlertDialogContent>
                                         <AlertDialogHeader>
-                                            <AlertDialogTitle className="text-lg font-bold text-foreground">
+                                            <AlertDialogTitle className="font-bold">
                                                 Delete Account
                                             </AlertDialogTitle>
-                                            <AlertDialogDescription className="text-sm text-muted-foreground mt-2">
+                                            <AlertDialogDescription>
                                                 Are you sure you want to delete {wallet.name}? All related transactions will be permanently deleted too.
                                             </AlertDialogDescription>
                                         </AlertDialogHeader>
-                                        <AlertDialogFooter className="flex flex-row justify-end gap-2 mt-4">
-                                            <AlertDialogCancel className="rounded-xl">
+                                        <AlertDialogFooter>
+                                            <AlertDialogCancel>
                                                 Cancel
                                             </AlertDialogCancel>
                                             <AlertDialogAction
                                                 variant="destructive"
                                                 onClick={confirmDelete}
-                                                className="rounded-xl"
                                             >
                                                 Delete
                                             </AlertDialogAction>
