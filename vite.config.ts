@@ -27,8 +27,8 @@ export default defineConfig({
                 short_name: "Loaffly",
                 description:
                     "Loaffly is a modern, beautiful personal finance application.",
-                theme_color: "#0f0f11",
-                background_color: "#0f0f11",
+                theme_color: "#422d24",
+                background_color: "#422d24",
                 display: "standalone",
                 orientation: "portrait-primary",
                 icons: [
