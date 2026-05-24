@@ -47,6 +47,9 @@
     --radius-3xl: calc(var(--radius) * 2.2);
     --radius-4xl: calc(var(--radius) * 2.6);
 
+    /* Custom breakpoints for ultra-narrow mobile viewports */
+    --breakpoint-xs: 375px;
+
     /* Custom brand colors matching design.md */
     --color-gold-crust: var(--gold-crust);
     --color-caramel-crust: var(--caramel-crust);
@@ -58,33 +61,40 @@
 
 :root {
     /* Base background & text */
-    --background: oklch(0.988 0.005 60); /* #FDFBF7 */
-    --foreground: oklch(0.22 0.025 45); /* #2C1F17 */
+    --background: oklch(0.988 0.005 60);
+    /* #FDFBF7 */
+    --foreground: oklch(0.22 0.025 45);
+    /* #2C1F17 */
 
     /* Cards & Popovers */
-    --card: oklch(1 0 0); /* Putih murni untuk kontras */
+    --card: oklch(1 0 0);
+    /* Putih murni untuk kontras */
     --card-foreground: oklch(0.22 0.025 45);
     --popover: oklch(1 0 0);
     --popover-foreground: oklch(0.22 0.025 45);
 
     /* UI Accents (Espresso) */
-    --primary: oklch(0.32 0.035 45); /* #4A3728 - Espresso */
+    --primary: oklch(0.32 0.035 45);
+    /* #4A3728 - Espresso */
     --primary-foreground: oklch(0.988 0.005 60);
 
     /* Secondary Badges (Toasted Oat) */
-    --secondary: oklch(0.92 0.022 70); /* #F1E6D6 */
+    --secondary: oklch(0.92 0.022 70);
+    /* #F1E6D6 */
     --secondary-foreground: oklch(0.32 0.035 45);
 
     /* Muted states */
     --muted: oklch(0.95 0.01 65);
-    --muted-foreground: oklch(0.53 0.015 60); /* #7B7067 */
+    --muted-foreground: oklch(0.53 0.015 60);
+    /* #7B7067 */
 
     /* Focus and interactive states */
     --accent: oklch(0.95 0.01 65);
     --accent-foreground: oklch(0.22 0.025 45);
 
     /* Destructive (Baked Terracotta Red) */
-    --destructive: oklch(0.52 0.17 30); /* #D84315 */
+    --destructive: oklch(0.52 0.17 30);
+    /* #D84315 */
     --destructive-foreground: oklch(0.985 0 0);
 
     /* Borders & Inputs */
@@ -104,11 +114,16 @@
     --warm-ochre: oklch(0.58 0.12 60);
 
     /* Charts (Matching warm color scheme) */
-    --chart-1: oklch(0.865 0.075 75); /* Caramel */
-    --chart-2: oklch(0.93 0.045 75); /* Gold */
-    --chart-3: oklch(0.58 0.12 60); /* Ochre */
-    --chart-4: oklch(0.52 0.17 30); /* Terracotta */
-    --chart-5: oklch(0.32 0.035 45); /* Espresso */
+    --chart-1: oklch(0.865 0.075 75);
+    /* Caramel */
+    --chart-2: oklch(0.93 0.045 75);
+    /* Gold */
+    --chart-3: oklch(0.58 0.12 60);
+    /* Ochre */
+    --chart-4: oklch(0.52 0.17 30);
+    /* Terracotta */
+    --chart-5: oklch(0.32 0.035 45);
+    /* Espresso */
 
     /* Sidebar mappings */
     --sidebar: oklch(0.988 0.005 60);
@@ -122,15 +137,19 @@
 }
 
 .dark {
-    --background: oklch(0.18 0.015 45); /* Cokelat kopi gelap pekat */
-    --foreground: oklch(0.95 0.01 65); /* Cream sangat terang */
+    --background: oklch(0.18 0.015 45);
+    /* Cokelat kopi gelap pekat */
+    --foreground: oklch(0.95 0.01 65);
+    /* Cream sangat terang */
 
-    --card: oklch(0.22 0.02 45); /* Espresso lembut */
+    --card: oklch(0.22 0.02 45);
+    /* Espresso lembut */
     --card-foreground: oklch(0.95 0.01 65);
     --popover: oklch(0.22 0.02 45);
     --popover-foreground: oklch(0.95 0.01 65);
 
-    --primary: oklch(0.92 0.022 70); /* Toasted Oat */
+    --primary: oklch(0.92 0.022 70);
+    /* Toasted Oat */
     --primary-foreground: oklch(0.18 0.015 45);
 
     --secondary: oklch(0.26 0.02 45);
@@ -150,10 +169,14 @@
     --ring: oklch(0.92 0.022 70);
 
     /* Custom brand color tokens (dark mode values) */
-    --gold-crust: oklch(0.35 0.03 45); /* Muted toasted gold */
-    --caramel-crust: oklch(0.28 0.025 45); /* Muted toasted caramel */
-    --cool-mist: oklch(0.24 0.015 240); /* Muted cool mist */
-    --success: oklch(0.6 0.08 140); /* Muted success green */
+    --gold-crust: oklch(0.35 0.03 45);
+    /* Muted toasted gold */
+    --caramel-crust: oklch(0.28 0.025 45);
+    /* Muted toasted caramel */
+    --cool-mist: oklch(0.24 0.015 240);
+    /* Muted cool mist */
+    --success: oklch(0.6 0.08 140);
+    /* Muted success green */
     --success-foreground: oklch(0.18 0.015 45);
     --warm-ochre: oklch(0.38 0.06 60);
 
@@ -179,13 +202,16 @@
     * {
         @apply border-border outline-ring/50;
     }
+
     body {
         @apply bg-background text-foreground;
     }
+
     button:not(:disabled),
     [role="button"]:not(:disabled) {
         cursor: pointer;
     }
+
     html {
         @apply font-sans;
     }
