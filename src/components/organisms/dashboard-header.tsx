@@ -1,4 +1,3 @@
-import * as React from "react"
 import { CalendarIcon, ChevronDownIcon } from "lucide-react"
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover"
 import { MonthPicker } from "@/components/ui/monthpicker"
@@ -13,9 +12,9 @@ function DashboardHeader({ profileName, selectedMonth, onMonthSelect }: Dashboar
     // Get initials for profile picture placeholder
     const initials = profileName
         ? profileName
-              .split(" ")
-              .map((n) => n[0])
-              .join("")
+            .split(" ")
+            .map((n) => n[0])
+            .join("")
         : "?"
 
     // Get dynamic greeting based on system hour
