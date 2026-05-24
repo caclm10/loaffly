@@ -209,7 +209,7 @@ function AccountFormPage() {
                     control={control}
                     render={({ field, fieldState }) => (
                         <Field data-invalid={fieldState.invalid}>
-                            <FieldLabel>Current Balance</FieldLabel>
+                            <FieldLabel>Starting Balance</FieldLabel>
                             <Input
                                 {...field}
                                 type="text"

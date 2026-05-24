@@ -6,6 +6,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ActivityItem } from "@/components/molecules/activity-item"
 import { formatDateLabel, getDateKey } from "@/lib/formatters"
 import type { Transaction } from "@/lib/loaffly-db"
+import { ChevronLeftIcon } from "lucide-react"
 
 interface TransactionGroup {
     dateKey: string
@@ -61,8 +62,15 @@ function AllTransactionPage() {
 
     return (
         <div className="flex flex-col gap-6">
-            {/* Header Title */}
-            <div className="flex h-14 items-center justify-center">
+            {/* Header Title with Back Button */}
+            <div className="relative flex h-14 items-center justify-center">
+                <Link
+                    to="/"
+                    className="absolute left-0 flex size-9 items-center justify-center rounded-full bg-secondary/50 text-foreground transition-all hover:bg-secondary active:scale-95 cursor-pointer"
+                    aria-label="Back to Dashboard"
+                >
+                    <ChevronLeftIcon className="h-5 w-5" />
+                </Link>
                 <h1 className="text-base font-semibold text-foreground">
                     All transaction
                 </h1>

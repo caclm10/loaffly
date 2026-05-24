@@ -1,6 +1,6 @@
 import { useParams, useNavigate, Link } from "react-router"
 import { useLiveQuery } from "dexie-react-hooks"
-import { Trash2Icon, PencilIcon } from "lucide-react"
+import { Trash2Icon, PencilIcon, MoreHorizontalIcon } from "lucide-react"
 import { db } from "@/lib/loaffly-db"
 import { SubPageLayout } from "@/layouts/sub-page-layout"
 import { WalletDetailCard } from "@/components/molecules/wallet-detail-card"
@@ -20,6 +20,17 @@ import {
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 
+import {
+    Drawer,
+    DrawerClose,
+    DrawerContent,
+    DrawerDescription,
+    DrawerHeader,
+    DrawerTitle,
+    DrawerTrigger,
+} from "@/components/ui/drawer"
+import { Button } from "@/components/ui/button"
+
 function AccountDetailPage() {
     const { id } = useParams<{ id: string }>()
     const navigate = useNavigate()
@@ -32,37 +43,37 @@ function AccountDetailPage() {
     // Filter and compute balance for this wallet
     const walletData = wallet && allTransactions
         ? (() => {
-              const txs = allTransactions.filter((t) => t.walletId === wallet.id)
-              const income = txs
-                  .filter((t) => t.type === "income")
-                  .reduce((sum, t) => sum + t.amount, 0)
-              const expenses = txs
-                  .filter((t) => t.type === "expense")
-                  .reduce((sum, t) => sum + t.amount, 0)
-              const balance = wallet.initialBalance + income - expenses
+            const txs = allTransactions.filter((t) => t.walletId === wallet.id)
+            const income = txs
+                .filter((t) => t.type === "income")
+                .reduce((sum, t) => sum + t.amount, 0)
+            const expenses = txs
+                .filter((t) => t.type === "expense")
+                .reduce((sum, t) => sum + t.amount, 0)
+            const balance = wallet.initialBalance + income - expenses
 
-              // Group transactions by day YYYY-MM-DD
-              const groups = new Map<string, Transaction[]>()
-              for (const t of txs) {
-                  const key = getDateKey(t.date)
-                  const existing = groups.get(key)
-                  if (existing) {
-                      existing.push(t)
-                  } else {
-                      groups.set(key, [t])
-                  }
-              }
+            // Group transactions by day YYYY-MM-DD
+            const groups = new Map<string, Transaction[]>()
+            for (const t of txs) {
+                const key = getDateKey(t.date)
+                const existing = groups.get(key)
+                if (existing) {
+                    existing.push(t)
+                } else {
+                    groups.set(key, [t])
+                }
+            }
 
-              const grouped = Array.from(groups.entries())
-                  .sort(([a], [b]) => b.localeCompare(a))
-                  .map(([dateKey, items]) => ({
-                      dateKey,
-                      label: formatDateLabel(items[0].date),
-                      items: items.sort((a, b) => b.date.localeCompare(a.date)),
-                  }))
+            const grouped = Array.from(groups.entries())
+                .sort(([a], [b]) => b.localeCompare(a))
+                .map(([dateKey, items]) => ({
+                    dateKey,
+                    label: formatDateLabel(items[0].date),
+                    items: items.sort((a, b) => b.date.localeCompare(a.date)),
+                }))
 
-              return { balance, groupedTransactions: grouped }
-          })()
+            return { balance, groupedTransactions: grouped }
+        })()
         : null
 
     async function confirmDelete() {
@@ -92,48 +103,85 @@ function AccountDetailPage() {
             title="Detail account"
             backTo="/account"
             rightAction={
-                <div className="flex items-center gap-1">
-                    <button
-                        onClick={() => navigate(`/account/${walletId}/edit`)}
-                        className="flex size-9 items-center justify-center rounded-full text-foreground transition-colors hover:bg-secondary"
-                        aria-label="Edit account"
-                    >
-                        <PencilIcon className="size-4" />
-                    </button>
-                    
-                    <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                            <button
-                                className="flex size-9 items-center justify-center rounded-full text-destructive transition-colors hover:bg-destructive/10"
-                                aria-label="Delete account"
-                            >
-                                <Trash2Icon className="size-4" />
-                            </button>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent className="border border-border/50 bg-popover p-6 shadow-xl backdrop-blur-md max-w-sm">
-                            <AlertDialogHeader>
-                                <AlertDialogTitle className="text-lg font-bold text-foreground">
-                                    Delete Account
-                                </AlertDialogTitle>
-                                <AlertDialogDescription className="text-sm text-muted-foreground mt-2">
-                                    Are you sure you want to delete {wallet.name}? All related transactions will be permanently deleted too.
-                                </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter className="flex flex-row justify-end gap-2 mt-4">
-                                <AlertDialogCancel className="rounded-xl">
-                                    Cancel
-                                </AlertDialogCancel>
-                                <AlertDialogAction
-                                    variant="destructive"
-                                    onClick={confirmDelete}
-                                    className="rounded-xl"
-                                >
-                                    Delete
-                                </AlertDialogAction>
-                            </AlertDialogFooter>
-                        </AlertDialogContent>
-                    </AlertDialog>
-                </div>
+                <Drawer>
+                    <DrawerTrigger asChild>
+                        <Button
+                            size="icon-sm"
+                            variant="ghost"
+                            aria-label="Account actions"
+                        >
+                            <MoreHorizontalIcon className="size-5" />
+                        </Button>
+                    </DrawerTrigger>
+                    <DrawerContent className="p-6 border-t border-border/10 bg-card rounded-t-2xl shadow-2xl pb-10">
+                        <div className="mx-auto w-full max-w-sm">
+                            <DrawerHeader>
+                                <DrawerTitle className="font-bold">
+                                    Account Actions
+                                </DrawerTitle>
+                                <DrawerDescription className="text-xs text-muted-foreground mt-1">
+                                    Manage your {wallet.name} account settings
+                                </DrawerDescription>
+                            </DrawerHeader>
+
+                            {/* Grid Actions matching the design-quick-action mockup */}
+                            <div className="grid grid-cols-1 xs:grid-cols-2 gap-3 xs:gap-4">
+                                {/* Edit Action Card */}
+                                <DrawerClose asChild>
+                                    <button
+                                        onClick={() => navigate(`/account/${walletId}/edit`)}
+                                        className="flex flex-row items-center justify-start gap-4 rounded-xl border border-border/40 bg-secondary/35 p-3 xs:flex-col xs:items-center xs:justify-center xs:gap-2 xs:p-4 hover:bg-secondary active:scale-[0.98] transition-all cursor-pointer w-full"
+                                    >
+                                        <div className="flex size-9 xs:size-10 items-center justify-center rounded-full bg-primary/10 text-primary xs:mb-1 shrink-0">
+                                            <PencilIcon className="size-4.5 xs:size-5" />
+                                        </div>
+                                        <span className="text-xs font-semibold text-foreground">
+                                            Edit Account
+                                        </span>
+                                    </button>
+                                </DrawerClose>
+
+                                {/* Delete Action Card with nested confirmation */}
+                                <AlertDialog>
+                                    <AlertDialogTrigger asChild>
+                                        <button
+                                            className="flex flex-row items-center justify-start gap-4 rounded-xl border border-destructive/20 bg-destructive/5 p-3 xs:flex-col xs:items-center xs:justify-center xs:gap-2 xs:p-4 hover:bg-destructive/10 active:scale-[0.98] transition-all text-destructive cursor-pointer w-full"
+                                        >
+                                            <div className="flex size-9 xs:size-10 items-center justify-center rounded-full bg-destructive/10 text-destructive xs:mb-1 shrink-0">
+                                                <Trash2Icon className="size-4.5 xs:size-5" />
+                                            </div>
+                                            <span className="text-xs font-semibold text-destructive">
+                                                Delete Account
+                                            </span>
+                                        </button>
+                                    </AlertDialogTrigger>
+                                    <AlertDialogContent className="border border-border/50 bg-popover p-6 shadow-xl backdrop-blur-md max-w-sm rounded-2xl">
+                                        <AlertDialogHeader>
+                                            <AlertDialogTitle className="text-lg font-bold text-foreground">
+                                                Delete Account
+                                            </AlertDialogTitle>
+                                            <AlertDialogDescription className="text-sm text-muted-foreground mt-2">
+                                                Are you sure you want to delete {wallet.name}? All related transactions will be permanently deleted too.
+                                            </AlertDialogDescription>
+                                        </AlertDialogHeader>
+                                        <AlertDialogFooter className="flex flex-row justify-end gap-2 mt-4">
+                                            <AlertDialogCancel className="rounded-xl">
+                                                Cancel
+                                            </AlertDialogCancel>
+                                            <AlertDialogAction
+                                                variant="destructive"
+                                                onClick={confirmDelete}
+                                                className="rounded-xl"
+                                            >
+                                                Delete
+                                            </AlertDialogAction>
+                                        </AlertDialogFooter>
+                                    </AlertDialogContent>
+                                </AlertDialog>
+                            </div>
+                        </div>
+                    </DrawerContent>
+                </Drawer>
             }
         >
             <div className="flex flex-col gap-6">

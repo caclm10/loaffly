@@ -73,8 +73,7 @@ function formatDateLabel(dateStr: string): string {
         (todayDate.getTime() - inputDate.getTime()) / (1000 * 60 * 60 * 24)
     )
 
-    if (diffDays === 0) return "Today"
-    if (diffDays === 1) return "Yesterday"
+    if (diffDays === 0) return `Today, ${day} ${monthNames[monthIdx]} ${year}`
 
     return `${day} ${monthNames[monthIdx]} ${year}`
 }
