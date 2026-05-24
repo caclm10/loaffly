@@ -1,6 +1,6 @@
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import { toast } from "sonner"
-import { useNavigate } from "react-router"
+import { useNavigate, useParams } from "react-router"
 import { useLiveQuery } from "dexie-react-hooks"
 import {
     PencilIcon,
@@ -25,12 +25,21 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 function NewTransactionPage() {
     const navigate = useNavigate()
+    const { id } = useParams<{ id: string }>()
+    const transactionId = id ? Number(id) : null
+    const isEdit = transactionId !== null
     const datetimeInputRef = useRef<HTMLInputElement>(null)
 
     // 1. Fetch wallets reactively
     const wallets = useLiveQuery(() => db.wallets.toArray())
 
-    // 2. Form States
+    // 2. Fetch existing transaction if editing
+    const existingTx = useLiveQuery(async () => {
+        if (!transactionId) return undefined
+        return await db.transactions.get(transactionId)
+    }, [transactionId])
+
+    // 3. Form States
     const [type, setType] = useState<"income" | "expense">("expense")
     const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(
         null
@@ -51,8 +60,34 @@ function NewTransactionPage() {
     )
     const [amount, setAmount] = useState<string>("0")
 
-    // Set default wallet once loaded
-    if (wallets && wallets.length > 0 && selectedWalletId === null) {
+    // Populate form values if in Edit Mode
+    const [hasLoadedExisting, setHasLoadedExisting] = useState(false)
+    useEffect(() => {
+        if (isEdit && existingTx && !hasLoadedExisting) {
+            setType(existingTx.type)
+            
+            // Match category name to category id
+            const matchedCategory = CATEGORIES.find(
+                (c) => c.name === existingTx.category && c.type === existingTx.type
+            )
+            if (matchedCategory) {
+                setSelectedCategoryId(matchedCategory.id)
+            }
+            
+            setNote(existingTx.note || "")
+            
+            if (existingTx.date) {
+                setDateTime(existingTx.date.substring(0, 16))
+            }
+            
+            setSelectedWalletId(existingTx.walletId)
+            setAmount(String(existingTx.amount))
+            setHasLoadedExisting(true)
+        }
+    }, [isEdit, existingTx, hasLoadedExisting])
+
+    // Set default wallet once loaded (only if not editing, or editing not finished loading)
+    if (wallets && wallets.length > 0 && selectedWalletId === null && !isEdit) {
         setSelectedWalletId(wallets[0].id)
     }
 
@@ -125,8 +160,15 @@ function NewTransactionPage() {
             note: note.trim() || undefined,
         }
 
-        await db.transactions.add(newTx as any)
-        navigate("/")
+        if (isEdit && transactionId) {
+            await db.transactions.update(transactionId, newTx)
+            toast.success("Transaction updated successfully!")
+            navigate(`/transactions/${transactionId}`)
+        } else {
+            await db.transactions.add(newTx as any)
+            toast.success("Transaction added successfully!")
+            navigate("/")
+        }
     }
 
     // Custom helper to display only the formatted Date (e.g. 23 May)
@@ -155,7 +197,10 @@ function NewTransactionPage() {
     }
 
     return (
-        <SubPageLayout title="New Transaction" backTo="/">
+        <SubPageLayout 
+            title={isEdit ? "Edit Transaction" : "New Transaction"} 
+            backTo={isEdit && transactionId ? `/transactions/${transactionId}` : "/"}
+        >
             {/* Scrollable upper section */}
             <div className="flex flex-col gap-5 pt-2 pb-[350px]">
                 {/* 1. Toggle Tab: Income / Expenses using premium shadcn Tabs */}

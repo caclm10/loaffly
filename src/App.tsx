@@ -19,10 +19,6 @@ function App() {
                 {/* Main layout routes (with bottom nav + FAB) */}
                 <Route path="/" element={<MainLayout />}>
                     <Route index element={<DashboardPage />} />
-                    <Route
-                        path="transactions"
-                        element={<AllTransactionPage />}
-                    />
                     <Route path="reports" element={<ReportsPage />} />
                     <Route path="account" element={<AccountPage />} />
                     <Route path="profile" element={<ProfilePage />} />
@@ -30,11 +26,19 @@ function App() {
 
                 {/* Sub-page routes (no bottom nav, own layout) */}
                 <Route
+                    path="/transactions"
+                    element={<AllTransactionPage />}
+                />
+                <Route
                     path="/transactions/:id"
                     element={<TransactionDetailPage />}
                 />
                 <Route
                     path="/transactions/new"
+                    element={<NewTransactionPage />}
+                />
+                <Route
+                    path="/transactions/:id/edit"
                     element={<NewTransactionPage />}
                 />
                 <Route

@@ -113,7 +113,7 @@ function AccountDetailPage() {
                             <MoreHorizontalIcon className="size-5" />
                         </Button>
                     </DrawerTrigger>
-                    <DrawerContent className="p-6 border-t border-border/10 bg-card rounded-t-2xl shadow-2xl pb-10">
+                    <DrawerContent className="p-6 pb-10">
                         <div className="mx-auto w-full max-w-sm">
                             <DrawerHeader>
                                 <DrawerTitle className="font-bold">
@@ -149,7 +149,7 @@ function AccountDetailPage() {
                                             variant="destructive"
                                             className="flex flex-row items-center justify-start h-auto p-3 gap-3 xs:flex-col xs:items-center xs:justify-center xs:gap-1 xs:p-4"
                                         >
-                                            <div className="flex size-9 items-center justify-center rounded-full bg-destructive/10 text-destructive xs:mb-1 shrink-0">
+                                            <div className="flex size-9 items-center justify-center rounded-full bg-white/20 text-white xs:mb-1 shrink-0">
                                                 <Trash2Icon className="size-4" />
                                             </div>
                                             <span className="text-xs font-semibold">

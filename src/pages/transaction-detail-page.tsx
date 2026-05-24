@@ -1,6 +1,6 @@
 import { useParams, useNavigate, useLocation } from "react-router"
 import { useLiveQuery } from "dexie-react-hooks"
-import { Trash2Icon } from "lucide-react"
+import { Trash2Icon, PencilIcon, MoreHorizontalIcon } from "lucide-react"
 import { db } from "@/lib/loaffly-db"
 import { SubPageLayout } from "@/layouts/sub-page-layout"
 import { TransactionDetailCard } from "@/components/molecules/transaction-detail-card"
@@ -19,6 +19,15 @@ import {
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
+import {
+    Drawer,
+    DrawerClose,
+    DrawerContent,
+    DrawerDescription,
+    DrawerHeader,
+    DrawerTitle,
+    DrawerTrigger,
+} from "@/components/ui/drawer"
 
 function TransactionDetailPage() {
     const { id } = useParams<{ id: string }>()
@@ -63,38 +72,84 @@ function TransactionDetailPage() {
             title="Detail transaction"
             backTo={backToPath}
             rightAction={
-                <AlertDialog>
-                    <AlertDialogTrigger asChild>
+                <Drawer>
+                    <DrawerTrigger asChild>
                         <Button
-                            type="button"
                             size="icon-sm"
-                            variant="destructive"
-                            aria-label="Delete transaction"
+                            variant="ghost"
+                            aria-label="Transaction actions"
                         >
-                            <Trash2Icon className="size-4" />
+                            <MoreHorizontalIcon className="size-5" />
                         </Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent className="max-w-sm">
-                        <AlertDialogHeader>
-                            <AlertDialogTitle className="text-lg font-bold text-foreground">
-                                Delete Transaction
-                            </AlertDialogTitle>
-                            <AlertDialogDescription className="mt-2 text-sm text-muted-foreground">
-                                Are you sure you want to delete this
-                                transaction? This action cannot be undone.
-                            </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                            <AlertDialogCancel>Cancel</AlertDialogCancel>
-                            <AlertDialogAction
-                                variant="destructive"
-                                onClick={confirmDelete}
-                            >
-                                Delete
-                            </AlertDialogAction>
-                        </AlertDialogFooter>
-                    </AlertDialogContent>
-                </AlertDialog>
+                    </DrawerTrigger>
+                    <DrawerContent className="p-6 pb-10">
+                        <div className="mx-auto w-full max-w-sm">
+                            <DrawerHeader >
+                                <DrawerTitle className="text-base font-bold text-foreground">
+                                    Transaction Actions
+                                </DrawerTitle>
+                                <DrawerDescription className="text-xs text-muted-foreground mt-1">
+                                    Manage your transaction settings
+                                </DrawerDescription>
+                            </DrawerHeader>
+
+                            {/* Grid Actions matching the design-quick-action mockup */}
+                            <div className="grid grid-cols-1 xs:grid-cols-2 gap-3 xs:gap-4">
+                                {/* Edit Action Card */}
+                                <DrawerClose asChild>
+                                    <Button
+                                        variant="secondary"
+                                        onClick={() => navigate(`/transactions/${txId}/edit`)}
+                                        className="flex flex-row items-center justify-start h-auto p-3 gap-3 xs:flex-col xs:items-center xs:justify-center xs:gap-1 xs:p-4"
+                                    >
+                                        <div className="flex size-9 items-center justify-center rounded-full bg-primary/10 text-primary xs:mb-1 shrink-0">
+                                            <PencilIcon className="size-4" />
+                                        </div>
+                                        <span className="text-xs font-semibold text-foreground">
+                                            Edit Transaction
+                                        </span>
+                                    </Button>
+                                </DrawerClose>
+
+                                {/* Delete Action Card with nested confirmation */}
+                                <AlertDialog>
+                                    <AlertDialogTrigger asChild>
+                                        <Button
+                                            variant="destructive"
+                                            className="flex flex-row items-center justify-start h-auto p-3 gap-3 xs:flex-col xs:items-center xs:justify-center xs:gap-1 xs:p-4"
+                                        >
+                                            <div className="flex size-9 items-center justify-center rounded-full bg-destructive/10 text-destructive xs:mb-1 shrink-0">
+                                                <Trash2Icon className="size-4" />
+                                            </div>
+                                            <span className="text-xs font-semibold">
+                                                Delete Transaction
+                                            </span>
+                                        </Button>
+                                    </AlertDialogTrigger>
+                                    <AlertDialogContent className="max-w-sm">
+                                        <AlertDialogHeader>
+                                            <AlertDialogTitle className="font-bold">
+                                                Delete Transaction
+                                            </AlertDialogTitle>
+                                            <AlertDialogDescription>
+                                                Are you sure you want to delete this transaction? This action cannot be undone.
+                                            </AlertDialogDescription>
+                                        </AlertDialogHeader>
+                                        <AlertDialogFooter>
+                                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                            <AlertDialogAction
+                                                variant="destructive"
+                                                onClick={confirmDelete}
+                                            >
+                                                Delete
+                                            </AlertDialogAction>
+                                        </AlertDialogFooter>
+                                    </AlertDialogContent>
+                                </AlertDialog>
+                            </div>
+                        </div>
+                    </DrawerContent>
+                </Drawer>
             }
         >
             <div className="flex flex-col items-center gap-8 py-4">

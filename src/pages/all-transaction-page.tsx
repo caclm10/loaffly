@@ -6,7 +6,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ActivityItem } from "@/components/molecules/activity-item"
 import { formatDateLabel, getDateKey } from "@/lib/formatters"
 import type { Transaction } from "@/lib/loaffly-db"
-import { ChevronLeftIcon } from "lucide-react"
+import { SubPageLayout } from "@/layouts/sub-page-layout"
 
 interface TransactionGroup {
     dateKey: string
@@ -61,103 +61,91 @@ function AllTransactionPage() {
     const isLoading = !transactions || !wallets
 
     return (
-        <div className="flex flex-col gap-6">
-            {/* Header Title with Back Button */}
-            <div className="relative flex h-14 items-center justify-center">
-                <Link
-                    to="/"
-                    className="absolute left-0 flex size-9 items-center justify-center rounded-full bg-secondary/50 text-foreground transition-all hover:bg-secondary active:scale-95 cursor-pointer"
-                    aria-label="Back to Dashboard"
+        <SubPageLayout title="All transaction" backTo="/">
+            <div className="flex flex-col gap-6">
+                {/* Filter Tabs using Shadcn Tabs */}
+                <Tabs
+                    value={activeTab}
+                    onValueChange={setActiveTab}
+                    className="w-full"
                 >
-                    <ChevronLeftIcon className="h-5 w-5" />
-                </Link>
-                <h1 className="text-base font-semibold text-foreground">
-                    All transaction
-                </h1>
-            </div>
+                    <TabsList className="grid w-full grid-cols-3 rounded-full bg-secondary/50 p-1">
+                        <TabsTrigger
+                            value="all"
+                            className="rounded-full data-[state=active]:bg-card data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+                        >
+                            All activity
+                        </TabsTrigger>
+                        <TabsTrigger
+                            value="income"
+                            className="rounded-full data-[state=active]:bg-card data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+                        >
+                            Income
+                        </TabsTrigger>
+                        <TabsTrigger
+                            value="expense"
+                            className="rounded-full data-[state=active]:bg-card data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+                        >
+                            Expenses
+                        </TabsTrigger>
+                    </TabsList>
 
-            {/* Filter Tabs using Shadcn Tabs */}
-            <Tabs
-                value={activeTab}
-                onValueChange={setActiveTab}
-                className="w-full"
-            >
-                <TabsList className="grid w-full grid-cols-3 rounded-full bg-secondary/50 p-1">
-                    <TabsTrigger
-                        value="all"
-                        className="rounded-full data-[state=active]:bg-card data-[state=active]:text-foreground data-[state=active]:shadow-sm"
-                    >
-                        All activity
-                    </TabsTrigger>
-                    <TabsTrigger
-                        value="income"
-                        className="rounded-full data-[state=active]:bg-card data-[state=active]:text-foreground data-[state=active]:shadow-sm"
-                    >
-                        Income
-                    </TabsTrigger>
-                    <TabsTrigger
-                        value="expense"
-                        className="rounded-full data-[state=active]:bg-card data-[state=active]:text-foreground data-[state=active]:shadow-sm"
-                    >
-                        Expenses
-                    </TabsTrigger>
-                </TabsList>
-
-                {/* Tabs Content */}
-                <div className="mt-6 flex flex-col gap-6">
-                    {isLoading ? (
-                        <div className="flex flex-col gap-4">
-                            {[1, 2, 3].map((i) => (
-                                <div
-                                    key={i}
-                                    className="h-16 w-full animate-pulse rounded-xl bg-secondary/30"
-                                />
-                            ))}
-                        </div>
-                    ) : filteredGroupedTransactions.length === 0 ? (
-                        <div className="py-12 text-center text-sm text-muted-foreground">
-                            No transactions found.
-                        </div>
-                    ) : (
-                        filteredGroupedTransactions.map((group) => (
-                            <div
-                                key={group.dateKey}
-                                className="flex flex-col gap-3"
-                            >
-                                {/* Date Group Header */}
-                                <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                                    {group.label}
-                                </h3>
-
-                                {/* List of Transactions */}
-                                <div className="flex flex-col gap-1">
-                                    {group.items.map((transaction) => {
-                                        const wallet = wallets?.find(
-                                            (w) => w.id === transaction.walletId
-                                        )
-                                        const walletName =
-                                            wallet?.name || "Wallet"
-                                        return (
-                                            <Link
-                                                key={transaction.id}
-                                                to={`/transactions/${transaction.id}`}
-                                                state={{ from: "/transactions" }}
-                                                className="block transition-transform active:scale-[0.99]"
-                                            >
-                                                <ActivityItem
-                                                    transaction={transaction}
-                                                    walletName={walletName}
-                                                />
-                                            </Link>
-                                        )
-                                    })}
-                                </div>
+                    {/* Tabs Content */}
+                    <div className="mt-6 flex flex-col gap-6">
+                        {isLoading ? (
+                            <div className="flex flex-col gap-4">
+                                {[1, 2, 3].map((i) => (
+                                    <div
+                                        key={i}
+                                        className="h-16 w-full animate-pulse rounded-xl bg-secondary/30"
+                                    />
+                                ))}
                             </div>
-                        ))
-                    )}
-                </div>
-            </Tabs>
-        </div>
+                        ) : filteredGroupedTransactions.length === 0 ? (
+                            <div className="py-12 text-center text-sm text-muted-foreground">
+                                No transactions found.
+                            </div>
+                        ) : (
+                            filteredGroupedTransactions.map((group) => (
+                                <div
+                                    key={group.dateKey}
+                                    className="flex flex-col gap-3"
+                                >
+                                    {/* Date Group Header */}
+                                    <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                                        {group.label}
+                                    </h3>
+
+                                    {/* List of Transactions */}
+                                    <div className="flex flex-col gap-1">
+                                        {group.items.map((transaction) => {
+                                            const wallet = wallets?.find(
+                                                (w) => w.id === transaction.walletId
+                                            )
+                                            const walletName =
+                                                wallet?.name || "Wallet"
+                                            return (
+                                                <Link
+                                                    key={transaction.id}
+                                                    to={`/transactions/${transaction.id}`}
+                                                    state={{ from: "/transactions" }}
+                                                    className="block transition-transform active:scale-[0.99]"
+                                                >
+                                                    <ActivityItem
+                                                        transaction={transaction}
+                                                        walletName={walletName}
+                                                    />
+                                                </Link>
+                                            )
+                                        })}
+                                    </div>
+                                </div>
+                            ))
+                        )}
+                    </div>
+                </Tabs>
+            </div>
+        </SubPageLayout>
     )
 }
 
