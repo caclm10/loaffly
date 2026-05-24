@@ -193,15 +193,15 @@ function ReportsPage() {
                 <div className="mt-6 rounded-xl border border-border/10 bg-secondary/30 p-5 shadow-sm">
                     {/* Card Header */}
                     <div className="mb-6 flex items-center justify-between">
-                        <span className="text-sm font-semibold text-foreground">
-                            Chart
+                        <span className="text-xs font-semibold text-foreground">
+                            Weekly Overview
                         </span>
-                        
+
                         {/* Dynamic Week Navigator */}
-                        <div className="flex items-center gap-1.5">
+                        <div className="flex items-center gap-1">
                             <button
                                 onClick={handlePrevWeek}
-                                className="flex size-7 items-center justify-center rounded-full hover:bg-secondary active:scale-95 transition-all text-muted-foreground hover:text-foreground"
+                                className="flex size-6 items-center justify-center rounded-full hover:bg-secondary active:scale-95 transition-all text-muted-foreground hover:text-foreground"
                                 aria-label="Previous week"
                                 disabled={isLoading}
                             >
@@ -212,7 +212,7 @@ function ReportsPage() {
                             </span>
                             <button
                                 onClick={handleNextWeek}
-                                className="flex size-7 items-center justify-center rounded-full hover:bg-secondary active:scale-95 transition-all text-muted-foreground hover:text-foreground"
+                                className="flex size-6 items-center justify-center rounded-full hover:bg-secondary active:scale-95 transition-all text-muted-foreground hover:text-foreground"
                                 aria-label="Next week"
                                 disabled={isLoading}
                             >
@@ -249,18 +249,18 @@ function ReportsPage() {
                                         className="fill-muted-foreground text-xs font-medium"
                                     />
                                     <YAxis
-                                        width={65}
+                                        width={38}
                                         tickLine={false}
                                         axisLine={false}
                                         tickMargin={6}
                                         tickFormatter={(val) => {
                                             if (val >= 1000000) {
-                                                return `Rp${(val / 1000000).toLocaleString("id-ID", { maximumFractionDigits: 1 })}jt`
+                                                return `${(val / 1000000).toLocaleString("id-ID", { maximumFractionDigits: 1 })}jt`
                                             }
                                             if (val >= 1000) {
-                                                return `Rp${(val / 1000).toLocaleString("id-ID", { maximumFractionDigits: 0 })}rb`
+                                                return `${(val / 1000).toLocaleString("id-ID", { maximumFractionDigits: 0 })}rb`
                                             }
-                                            return `Rp${val}`
+                                            return `${val}`
                                         }}
                                         className="fill-muted-foreground text-[10px] font-medium"
                                     />
